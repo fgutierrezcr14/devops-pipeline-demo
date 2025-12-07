@@ -130,6 +130,7 @@ jobs:
         uses: azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEBAPP_STAGING_TOKEN }}
+          action: "upload"
           app_location: "dist"
           output_location: ""
 
@@ -153,5 +154,6 @@ jobs:
         uses: azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEBAPP_PROD_TOKEN }}
+          action: "upload"
           app_location: "dist"
           output_location: ""
