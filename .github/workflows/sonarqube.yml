@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'zulu'
+          distribution: "zulu"
 
       # --- Checkout del repo ---
       - uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
       - name: Install .NET 9
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: "9.0.x"
 
       # --- Cache Sonar ---
       - name: Cache SonarQube Cloud packages
@@ -62,10 +62,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           $scanner = "${{ runner.temp }}\scanner\dotnet-sonarscanner.exe"
-          
+
           & $scanner begin `
-            /k:"jperezdev_devops-pipeline-demo" `
-            /o:"jperezdev" `
+            /k:"${{ secrets.PROJECTNAMEANDUSER }}" `
+            /o:"${{secrets.GITHUBUSER }}" `
             /d:sonar.host.url="https://sonarcloud.io" `
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
             /d:sonar.cs.dotcover.reportsPaths="coverage.dotcover.xml"
