@@ -52,25 +52,27 @@ jobs:
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: powershell
         run: |
-          New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory -Force
-          dotnet tool install dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+          New-Item -Path $env:RUNNER_TEMP\scanner -ItemType Directory -Force
+          dotnet tool install dotnet-sonarscanner --tool-path $env:RUNNER_TEMP\scanner
 
-      # --- Construcción + Análisis ---
+      # --- Construcción + Análisis (SEGURO) ---
       - name: Build and analyze
         shell: powershell
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT: ${{ secrets.PROJECTNAMEANDUSER }}
+          SONAR_ORG: ${{ secrets.GITHUBUSER }}
         run: |
-          $scanner = "${{ runner.temp }}\scanner\dotnet-sonarscanner.exe"
+          $scanner = "$env:RUNNER_TEMP\scanner\dotnet-sonarscanner.exe"
 
           & $scanner begin `
-            /k:"${{ secrets.PROJECTNAMEANDUSER }}" `
-            /o:"${{secrets.GITHUBUSER }}" `
+            /k:"$env:SONAR_PROJECT" `
+            /o:"$env:SONAR_ORG" `
             /d:sonar.host.url="https://sonarcloud.io" `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+            /d:sonar.token="$env:SONAR_TOKEN" `
             /d:sonar.cs.dotcover.reportsPaths="coverage.dotcover.xml"
 
           dotnet build --configuration Release
 
           & $scanner end `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+            /d:sonar.token="$env:SONAR_TOKEN"
